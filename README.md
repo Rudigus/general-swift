@@ -1,3 +1,3 @@
 # Learning Swift
 
-Following the [https://www.hackingwithswift.com/100](100 Days of Swift) tutorial.
+Following the [100 Days of Swift](https://www.hackingwithswift.com/100) tutorial.
