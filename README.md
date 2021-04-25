@@ -1,3 +1,3 @@
-# Learning Swift
+# General Swift
 
-Following the [100 Days of Swift](https://www.hackingwithswift.com/100) tutorial.
+Repo for learning swift and Apple technologies in general
