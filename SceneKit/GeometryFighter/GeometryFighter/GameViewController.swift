@@ -44,7 +44,7 @@ class GameViewController: UIViewController {
         // 2
         cameraNode.camera = SCNCamera()
         // 3
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 10)
+        cameraNode.position = SCNVector3(x: 0, y: 5, z: 10)
         // 4
         scnScene.rootNode.addChildNode(cameraNode)
     }
@@ -72,8 +72,22 @@ class GameViewController: UIViewController {
         case .tube:
             geometry = SCNTube(innerRadius: 0.25, outerRadius: 0.5, height: 1.0)
         }
+        geometry.materials.first?.diffuse.contents = UIColor.random()
         // 4
         let geometryNode = SCNNode(geometry: geometry)
+        geometryNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
+//        geometryNode.physicsBody?.isAffectedByGravity = false
+        // 1
+        let randomX = Float.random(min: -2, max: 2)
+        let randomY = Float.random(min: 10, max: 18)
+        // 2
+        let force = SCNVector3(x: randomX, y: randomY, z: 0)
+        // 3
+        let position = SCNVector3(x: 0.05, y: 0.05, z: 0.05)
+        // 4
+        geometryNode.physicsBody?.applyForce(force, at: position, asImpulse: true)
+        // For future reference, applyTorque uses a SCNVector4, where the first 3 values represent the direction of the torque and the 4th represents the magnitude. Also, using asImpulse as false will not yield a constant torque, you would need to apply that torque on each simulation step, not only once.
+        //geometryNode.physicsBody?.applyTorque(SCNVector4(0, 1, 1, 3), asImpulse: true)
         // 5
         scnScene.rootNode.addChildNode(geometryNode)
     }
