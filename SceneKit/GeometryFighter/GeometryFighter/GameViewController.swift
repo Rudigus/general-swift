@@ -5,13 +5,13 @@ class GameViewController: UIViewController {
     var scnView: SCNView!
     var scnScene: SCNScene!
     var cameraNode: SCNNode!
+    var spawnTime: TimeInterval = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
         setupScene()
         setupCamera()
-        spawnShape()
     }
     
     override var shouldAutorotate: Bool {
@@ -30,6 +30,8 @@ class GameViewController: UIViewController {
         scnView.allowsCameraControl = true
         // 3
         scnView.autoenablesDefaultLighting = true
+        scnView.delegate = self
+        scnView.isPlaying = true
     }
     
     func setupScene() {
@@ -72,7 +74,8 @@ class GameViewController: UIViewController {
         case .tube:
             geometry = SCNTube(innerRadius: 0.25, outerRadius: 0.5, height: 1.0)
         }
-        geometry.materials.first?.diffuse.contents = UIColor.random()
+        let color = UIColor.random()
+        geometry.materials.first?.diffuse.contents = color
         // 4
         let geometryNode = SCNNode(geometry: geometry)
         geometryNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
@@ -89,6 +92,46 @@ class GameViewController: UIViewController {
         // For future reference, applyTorque uses a SCNVector4, where the first 3 values represent the direction of the torque and the 4th represents the magnitude. Also, using asImpulse as false will not yield a constant torque, you would need to apply that torque on each simulation step, not only once.
         //geometryNode.physicsBody?.applyTorque(SCNVector4(0, 1, 1, 3), asImpulse: true)
         // 5
+        let trailEmitter = createTrail(color: color, geometry: geometry)
+        geometryNode.addParticleSystem(trailEmitter)
         scnScene.rootNode.addChildNode(geometryNode)
+    }
+    
+    // 1
+    func createTrail(color: UIColor, geometry: SCNGeometry) -> SCNParticleSystem {
+        // 2
+        let trail = SCNParticleSystem(named: "Trail.scnp", inDirectory: nil)!
+        // 3
+        trail.particleColor = color
+        // 4
+        trail.emitterShape = geometry
+        // 5
+        return trail
+    }
+    
+    func cleanScene() {
+        // 1
+        for node in scnScene.rootNode.childNodes {
+            // 2
+            if node.presentation.position.y < -2 {
+                // 3
+                node.removeFromParentNode()
+            }
+        }
+    }
+    
+}
+
+// 1
+extension GameViewController: SCNSceneRendererDelegate {
+    // 2
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        // 1
+        if time > spawnTime {
+            spawnShape()
+            // 2
+            spawnTime = time + TimeInterval(Float.random(min: 0.2, max: 1.5))
+        }
+        cleanScene()
     }
 }
