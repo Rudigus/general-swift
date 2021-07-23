@@ -1,13 +1,14 @@
 // To compile this code, run this in terminal:
-// gcc -framework Foundation main.m -o main
+// gcc -framework Foundation Warrior.m main.m -o main
 
 #import <Foundation/Foundation.h>
+#import "Warrior.h"
 
-// Shows many ways to print in objective-c alongside Foundation framework.
+// Shows many ways to print strings in objective-c alongside Foundation framework.
 // char *string or const char *string - default C string
 // NSString *string - immutable Foundation string
 // NSMutableString *string - mutable Foundation string
-void printExample() {
+void stringExample() {
     NSString *nsString = @"this is a NS string";
     char *cString = "this is a C string";
     printf("Default C printf usage. %s\n", cString);
@@ -35,10 +36,20 @@ void arrayExample() {
     NSLog(@"%d", (int)[array count]);
 }
 
+// Using custom object
+void warriorExample() {
+    Warrior *firstWarrior = [[Warrior alloc] initWithName:@"Derek"];
+    Warrior *secondWarrior = [[Warrior alloc] initWithName:@"Gustav"];
+    [firstWarrior attackWarrior:secondWarrior];
+    NSLog(@"%@", firstWarrior);
+    NSLog(@"%@", secondWarrior);
+}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        printExample();
-        arrayExample();
+//        stringExample();
+//        arrayExample();
+        warriorExample();
     }
     return 0;
 }
